@@ -13,7 +13,7 @@
                     <li class="mr-5">Welcome, {{ userStore.user.name }}!</li>
                     <li><a href="/home">Home</a></li>
                     <li><a href="/notifcation">Notification</a></li>
-                    <li><a href="/profile">Profile</a></li>
+                    <li><a :href="`/profile/${userStore.user.id}`">Profile</a></li>
                     <li @click="userStore.logout()"><a href="">Logout</a></li>
                 </ul>
             </div>

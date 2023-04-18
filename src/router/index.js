@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Profile from '../views/Profile.vue'
+import ChatRoom from '../views/Chat.vue'
 import { isAuthenticated } from './auth.js'
 
 const router = createRouter({
@@ -27,9 +28,15 @@ const router = createRouter({
             meta: { requiresAuth: true }
         },
         {
-            path: '/profile',
+            path: '/profile/:id',
             name: 'profile',
             component: Profile,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/chat/:id',
+            name: 'chat',
+            component: ChatRoom,
             meta: { requiresAuth: true }
         },
     ]

@@ -61,7 +61,7 @@ let errMsg = ref([])
 let success = ref('')
 
 async function register() {
-    axios.post(`http://127.0.0.1:8000/api/user/register`, state)
+    axios.post(`/user/register`, state)
         .then(response => {
             errMsg.value = []
             success.value = response.data.message
