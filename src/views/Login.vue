@@ -2,7 +2,8 @@
     <section class="min-h-screen flex flex-col">
         <div class="flex flex-1 items-center justify-center">
             <div class="rounded-lg sm:border-2 px-4 lg:px-24 py-16 lg:max-w-xl sm:max-w-md w-full text-center">
-                <p v-if="!errMsg.length"> 
+                <p v-if="typeof errMsg == 'string'" class="text-red-500">{{ errMsg }}</p>
+                <p v-else-if="!errMsg.length"> 
                     <div v-for="err in errMsg" class="text-red-500">
                         {{ err[0] }}
                     </div>
@@ -40,24 +41,25 @@
 import { reactive, ref } from 'vue'
 import axios from '@/router/axios'
 import router from '@/router/index'
+import { useUserStore } from '@/stores/UserStore.js'
 
 const state = reactive({
     email: "",
     password: "",
 })
 
+const userStore = new useUserStore()
 let errMsg = ref([])
 
 async function login() {
-    axios.post(`http://127.0.0.1:8000/api/user/login`, state)
+    axios.post(`/user/login`, state)
         .then(response => {
             errMsg.value = []
-            localStorage.setItem('token', response.data.access_token)
+            userStore.login(response.data.access_token, response.data.user)
             router.push('/home')
         })
         .catch(err => {
-            errMsg.value = err.response?.data?.errors
-            console.log(err)
+            errMsg.value = err.response.status == 401 ? err.response?.data?.message : err.response?.data?.errors 
         })
 }
 </script>
