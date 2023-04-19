@@ -20,7 +20,7 @@
                         <tr v-for="contact in state.contacts" :key="contact.id" class="my-1 flex flex-row justify-between">
                             <td>{{ contact.name }}</td>
                             <td class="flex justify-end space-x-4">
-                                <a href="/chat/1">Chat</a>
+                                <a :href="`/message/${contact.id}`">Chat</a>
                                 <a href="/user/">Profile</a>
                                 <a href="">Remove</a>
                             </td>

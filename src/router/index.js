@@ -34,7 +34,7 @@ const router = createRouter({
             meta: { requiresAuth: true }
         },
         {
-            path: '/chat/:id',
+            path: '/message/:id',
             name: 'chat',
             component: ChatRoom,
             meta: { requiresAuth: true }
