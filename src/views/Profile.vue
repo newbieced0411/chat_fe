@@ -53,11 +53,11 @@ async function update() {
         .then(response => {
             errMsg.value = []
             success.value = response.data.message
-            // console.log(response.data)
+            console.log(response.data)
         })
         .catch(err => {
             errMsg.value = err.response?.data?.errors
-            // console.log(err)
+            console.log(err)
         })
 }
 </script>

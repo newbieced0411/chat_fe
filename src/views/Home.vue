@@ -5,8 +5,8 @@
                 <div class="flex flex-row justify-between">
                     <h1>Your Contacts</h1>
                     <button @click="showModal = true"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Add New Contact
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 rounded">
+                        Add
                     </button>
                 </div>
                 <table class="w-full text-left">
@@ -16,35 +16,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Jane Doe</td>
+                        <!-- {{ state.contacts }} -->
+                        <tr v-for="contact in state.contacts" :key="contact.id" class="my-1 flex flex-row justify-between">
+                            <td>{{ contact.name }}</td>
                             <td class="flex justify-end space-x-4">
                                 <a href="/chat/1">Chat</a>
-                                <a href="">Profile</a>
-                                <a href="">Remove</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Jane Doe</td>
-                            <td class="flex justify-end space-x-4">
-                                <a href="">Chat</a>
-                                <a href="">Profile</a>
-                                <a href="">Remove</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Jane Doe</td>
-                            <td class="flex justify-end space-x-4">
-                                <a href="">Chat</a>
-                                <a href="">Profile</a>
-                                <a href="">Remove</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Jane Doe</td>
-                            <td class="flex justify-end space-x-4">
-                                <a href="">Chat</a>
-                                <a href="">Profile</a>
+                                <a href="/user/">Profile</a>
                                 <a href="">Remove</a>
                             </td>
                         </tr>
@@ -56,43 +33,79 @@
 
     <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center"
         @click.self="showModal = false">
-        <form @submit.prevent="register" class="w-1/3 p-4 rounded text-center bg-white">
+        <div class="w-1/3 p-4 rounded text-center bg-white">
             <h1 class="font-bold tracking-wider text-3xl mb-8 w-full text-gray-600">
-                Add New Contact
+                Search
             </h1>
+            <div v-if="state.message">{{ state.message }}</div>
             <div class="py-2 text-left">
-                <input v-model="state.name" type="text"
+                <input v-model="state.input.query" type="text"
                     class="bg-gray-200 border-2 border-gray-100 focus:outline-none bg-gray-100 block w-full py-2 px-4 rounded-lg focus:border-gray-700 "
-                    placeholder="Name" />
+                    placeholder="Search" />
             </div>
-            <div class="py-2 text-left">
-                <input v-model="state.email" type="email"
-                    class="bg-gray-200 border-2 border-gray-100 focus:outline-none bg-gray-100 block w-full py-2 px-4 rounded-lg focus:border-gray-700 "
-                    placeholder="Email" />
-            </div>
-            <div class="py-2 text-left">
-                <input v-model="state.password" type="number"
-                    class="bg-gray-200 border-2 border-gray-100 focus:outline-none bg-gray-100 block w-full py-2 px-4 rounded-lg focus:border-gray-700 "
-                    placeholder="Phone" />
-            </div>
+            <ul class="my-5 text-left">
+                <div class="mb-2 text-xl font-medium">Result:</div>
+                <li v-for="user in state.users" :key="user.id" class="my-1 flex flex-row justify-between">
+                    <div>{{ user.name }}</div>
+                    <div class="w-1/3 text-left">{{ user.email }}</div>
+                    <div @click="add(user.id)" class="p-1 text-blue-500 cursor-pointer">Add</div>
+                </li>
+            </ul>
+
             <div class="py-2">
-                <button type="submit"
+                <button type="submit" @click="search"
                     class="border-2 border-gray-100 focus:outline-none bg-purple-600 text-white font-bold tracking-wider block w-full p-2 rounded-lg focus:border-gray-700 hover:bg-purple-700">
-                    Submit
+                    Search
                 </button>
             </div>
-        </form>
-</div></template>
+        </div>
+    </div>
+</template>
 
 <script setup>
 import { ref, reactive } from 'vue'
-
-const state = reactive({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: ""
-})
+import axios from '@/router/axios'
 
 const showModal = ref(false)
+const state = reactive({
+    contacts: [],
+    input: {
+        query: '',
+    },
+    users: [],
+    message: '',
+})
+
+async function getContacts(){
+    axios.get(`/contact/`)
+        .then(response => {
+            state.contacts = response.data.data
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+
+async function search() {
+    axios.post(`/contact/search`, state.input)
+        .then(response => {
+            state.users = response.data.data
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+
+async function add($id){
+    axios.post(`/contact/add/${$id}`)
+        .then(response => {
+            state.message = response.data.message
+            getContacts()
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+
+getContacts()
 </script>
