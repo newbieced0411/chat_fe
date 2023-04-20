@@ -1,3 +1,4 @@
+// import './bootstrap' // not working
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'

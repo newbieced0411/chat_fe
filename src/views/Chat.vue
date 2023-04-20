@@ -6,7 +6,7 @@
                 <a href="/home">Back</a>
             </div>
             <div class="h-80 overflow-y-scroll p-4">
-                <div v-for="chat in state.messages" :key="chat.id" class="mb-8">
+                <div v-for="chat in state.messages" :key="chat.id" class="mb-8 ">
                     <div v-if="chat.user.id != state.responder.id" class="flex justify-end">
                         <div class="bg-blue-500 text-white py-2 px-4 rounded-full my-1 mr-2">
                             <p>{{ chat.message }}</p>
@@ -21,7 +21,7 @@
             </div>
 
             <div class="flex items-center bg-white p-4">
-                <input v-model="state.chatbox" @keyup.enter="send" type="text" placeholder="Type your message here"
+                <input v-model="state.payload.chat" @keyup.enter="send" type="text" placeholder="Type your message here"
                     class="flex-grow p-2 rounded-l-lg border-2 border-r-0 border-gray-400 focus:outline-none focus:border-blue-500" />
                 <button @click="send" class="px-4 py-2 rounded-r-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold">
                     Send
@@ -59,21 +59,20 @@ async function messages() {
 
 async function send(e) {
     e.preventDefault()
-    if(chatbox != ''){
-        state.payload.responder_id = responder.id
+    if(state.payload.chat != ''){
+        state.payload.responder_id = state.responder.id
         axios.post('/message/send', state.payload)
             .then(response => {
-
+                console.log(response.data)
+                messages()
             })
             .catch(err => {
-
+                console.log(err)
             })
-
+        state.payload.chat = '' 
     }
     console.log('hello')
 }
-
-
 
 messages()
 </script>
